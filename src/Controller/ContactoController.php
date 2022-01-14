@@ -18,23 +18,16 @@ class ContactoController extends AbstractController
     ]; 
 
     /**
-    * @Route("/contacto/{codigo<\d+>?1}", name="ficha_contacto")
+    * @Route("/contacto/{codigo}", name="ficha_contacto")
     */
     public function ficha($codigo): Response
     {
         $resultado = ($this->contactos[$codigo] ?? null);
 
-        if ($resultado){
-            $html = "<ul>";
-                $html .= "<li> $codigo </li>";
-                $html .= "<li>" . $resultado['nombre'] . "</li>";
-                $html .= "<li>" . $resultado['telefono'] . "</li>";
-                $html .= "<li>" . $resultado['email'] . "</li>";
-            $html .= "</ul>";
-
-            return new Response("<html><body>$html</body>");
-        }else
-        return new Response("<html><body>Contacto $codigo no encontrado</body>");
+            return $this->render('ficha_contacto.html.twig', [
+                'contacto' => $resultado
+            ]);
+            
     }
 
 
@@ -48,21 +41,9 @@ class ContactoController extends AbstractController
                 return strpos($contacto["nombre"], $texto) !== FALSE;
             });
 
+            return $this->render('lista_contactos.html.twig', [
+                'contactos' => $resultados
+            ]);
 
-        if(count($resultados)){
-            
-            $html = "<ul>";
-            foreach($resultados as $id => $resultado){
-                
-                    $html .= "<li> $id </li>";
-                    $html .= "<li>" . $resultado['nombre'] . "</li>";
-                    $html .= "<li>" . $resultado['telefono'] . "</li>";
-                    $html .= "<li>" . $resultado['email'] . "</li><br>";
-                }
-                $html .= "</ul>";
-
-            return new Response("<html><body>$html</body>");
-        }else
-        return new Response("<html><body>No se ha encontrado ningun contacto</body>");
     }
 }
